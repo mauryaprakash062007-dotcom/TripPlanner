@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="accent_blue">#4D8EFF</color>
+    <color name="accent_teal">#2DD4BF</color>
+    <color name="bg_dark">#0F1117</color>
+    <color name="card_dark">#22263A</color>
+    <color name="check_done">#2DD4BF</color>
+    <color name="chip_bg">#2A2E42</color>
+    <color name="chip_selected">#4D8EFF</color>
+    <color name="divider">#2A2E42</color>
+    <color name="rain_color">#6C8EFF</color>
+    <color name="surface_dark">#1A1D27</color>
+    <color name="tab_indicator">#4D8EFF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9AA0B4</color>
+    <color name="weather_card">#1E2235</color>
+    <string name="app_name">TripPlanner</string>
+    <string name="chip_all">All</string>
+    <string name="chip_beaches">Beaches</string>
+    <string name="chip_cafe">☕ Cafe</string>
+    <string name="chip_clubs">💃 Clubs</string>
+    <string name="chip_food">Food &amp; Drink</string>
+    <string name="chip_nightlife">Nightlife</string>
+    <string name="chip_pubs">🍺 Pubs</string>
+    <string name="chip_restaurant">🍴 Restaurant</string>
+    <string name="chip_rooms_stay">🏨 Rooms/Stay</string>
+    <string name="chip_sights">Sights</string>
+    <string name="chip_stay">Stay</string>
+    <style name="ChipStyle" parent="Widget.MaterialComponents.Chip.Choice">
+        <item name="android:textColor">@color/chip_text_color_selector</item>
+        <item name="chipBackgroundColor">@color/chip_background_selector</item>
+        <item name="chipStrokeColor">@color/accent_blue</item>
+        <item name="chipStrokeWidth">1dp</item>
+        <item name="checkedIconVisible">false</item>
+    </style>
+    <style name="CustomTabStyle" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabTextColor">@color/text_secondary</item>
+        <item name="tabSelectedTextColor">@color/accent_blue</item>
+        <item name="tabIndicatorColor">@color/accent_blue</item>
+        <item name="tabBackground">@color/surface_dark</item>
+    </style>
+    <style name="Theme.TripPlanner" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/accent_blue</item>
+        <item name="colorPrimaryVariant">@color/accent_teal</item>
+        <item name="colorOnPrimary">@color/text_primary</item>
+        <item name="colorSurface">@color/surface_dark</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:windowBackground">@color/bg_dark</item>
+        <item name="android:statusBarColor">@color/bg_dark</item>
+        <item name="android:navigationBarColor">@color/bg_dark</item>
+        <item name="tabStyle">@style/CustomTabStyle</item>
+    </style>
+</resources>

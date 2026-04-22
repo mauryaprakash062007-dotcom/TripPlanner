@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/bg_dark"
+    android:padding="16dp">
+
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:scrollbars="none"
+        android:layout_marginBottom="12dp">
+
+        <com.google.android.material.chip.ChipGroup
+            android:id="@+id/chipGroupFilters"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:singleSelection="true"
+            app:selectionRequired="true">
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipAll"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="All"
+                android:checked="true"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipSights"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sights"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipFood"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Food &amp; Drink"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipNightlife"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Nightlife"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipStay"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Stay"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+            <com.google.android.material.chip.Chip
+                android:id="@+id/chipBeaches"
+                style="@style/Widget.MaterialComponents.Chip.Choice"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Beaches"
+                app:chipBackgroundColor="@color/chip_background_selector"
+                android:textColor="@color/chip_text_color_selector" />
+
+        </com.google.android.material.chip.ChipGroup>
+    </HorizontalScrollView>
+
+    <TextView
+        android:id="@+id/tvAttractionsLoading"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Finding top spots..."
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        android:gravity="center"
+        android:layout_marginTop="40dp"
+        android:visibility="visible" />
+
+    <ListView
+        android:id="@+id/listAttractions"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null"
+        android:visibility="gone" />
+
+</LinearLayout>

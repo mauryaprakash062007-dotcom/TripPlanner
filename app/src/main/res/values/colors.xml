@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_dark">#0F1117</color>
+    <color name="surface_dark">#1A1D27</color>
+    <color name="card_dark">#22263A</color>
+    <color name="accent_blue">#4D8EFF</color>
+    <color name="accent_teal">#2DD4BF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#9AA0B4</color>
+    <color name="chip_bg">#2A2E42</color>
+    <color name="chip_selected">#4D8EFF</color>
+    <color name="tab_indicator">#4D8EFF</color>
+    <color name="divider">#2A2E42</color>
+    <color name="check_done">#2DD4BF</color>
+    <color name="weather_card">#1E2235</color>
+    <color name="rain_color">#6C8EFF</color>
+</resources>

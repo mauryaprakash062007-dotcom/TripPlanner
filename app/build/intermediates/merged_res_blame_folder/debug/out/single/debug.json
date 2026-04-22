@@ -1,0 +1,138 @@
+[
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\color_chip_text_color_selector.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\color\\chip_text_color_selector.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-hdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-hdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\drawable_card_bg.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\drawable\\card_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xxxhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xxxhdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_signup.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_signup.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_item_attraction.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\item_attraction.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xxxhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xxxhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_item_trip_history.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\item_trip_history.xml"
+    },
+    {
+        "merged": "com.example.tripplanner.app-merged_res-31:/layout_activity_main.xml.flat",
+        "source": "com.example.tripplanner.app-main-33:/layout/activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_budget.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_budget.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_dashboard.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_dashboard.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\drawable_ic_airplane.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\drawable\\ic_airplane.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-mdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-mdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\drawable_date_btn_bg.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\drawable\\date_btn_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_login.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_login.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_fragment_weather.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\fragment_weather.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\drawable_number_bg.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\drawable\\number_bg.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_fragment_attractions.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\fragment_attractions.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_fragment_packlist.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\fragment_packlist.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_trip_result.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_trip_result.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-hdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-hdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_travel_tips.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_travel_tips.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-mdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-mdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_trip_history.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_trip_history.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_profile.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_profile.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\color_chip_background_selector.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\color\\chip_background_selector.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_item_pack.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\item_pack.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xxhdpi_ic_launcher.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xxhdpi\\ic_launcher.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\layout_item_weather_day.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\layout\\item_weather_day.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xxhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xxhdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-merged_res-31:\\mipmap-xhdpi_ic_launcher_round.xml.flat",
+        "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\daemon\\8.5\\com.example.tripplanner.app-main-33:\\mipmap-xhdpi\\ic_launcher_round.xml"
+    },
+    {
+        "merged": "com.example.tripplanner.app-merged_res-31:/layout_fragment_attractions.xml.flat",
+        "source": "com.example.tripplanner.app-main-33:/layout/fragment_attractions.xml"
+    }
+]
