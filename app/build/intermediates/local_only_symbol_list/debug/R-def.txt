@@ -16,10 +16,13 @@ color tab_indicator
 color text_primary
 color text_secondary
 color weather_card
+color white
+drawable bottom_gradient
 drawable card_bg
 drawable date_btn_bg
 drawable ic_airplane
 drawable number_bg
+drawable rating_bg
 id btnBack
 id btnCalculate
 id btnEndDate
@@ -28,6 +31,7 @@ id btnLogout
 id btnNewTrip
 id btnPlanTrip
 id btnSave
+id btnSelect
 id btnSignup
 id btnStartDate
 id cardBudget
@@ -67,6 +71,7 @@ id etPassword
 id etPhone
 id etTotalBudget
 id etTransport
+id ivPlacePhoto
 id listAttractions
 id listPackItems
 id listTripHistory
@@ -76,7 +81,6 @@ id tipsContainer
 id tvAttractionAddress
 id tvAttractionCategory
 id tvAttractionName
-id tvAttractionNumber
 id tvAttractionsLoading
 id tvDayCondition
 id tvDayDate
@@ -99,6 +103,7 @@ id tvNoTrips
 id tvPackEmoji
 id tvPackProgress
 id tvRainWarning
+id tvRating
 id tvRemaining
 id tvSpent
 id tvStartDate

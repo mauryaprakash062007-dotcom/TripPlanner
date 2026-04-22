@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.tripplanner.app-mergeDebugResources-29:/values-v16/values-v16.xml",
+            "outputFile": "com.example.tripplanner.app-mergeDebugResources-30:/values-v16/values-v16.xml",
             "map": [
                 {
                     "source": "C:\\Users\\MAURYA PRAKASH\\.gradle\\caches\\transforms-3\\38fdf4e56534b3c4c6a8297bf7eeddee\\transformed\\appcompat-1.6.1\\res\\values-v16\\values-v16.xml",

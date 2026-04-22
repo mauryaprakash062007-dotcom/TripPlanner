@@ -7,7 +7,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -15,6 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 
 import org.json.JSONArray;
@@ -26,6 +30,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import okhttp3.Call;
@@ -49,6 +54,7 @@ public class AttractionsFragment extends Fragment {
     
     List<Place> allFetchedPlaces = new ArrayList<>();
     String currentFilter = "All";
+    PlaceAdapter placeAdapter;
 
     static class Place {
         String name;
@@ -56,6 +62,14 @@ public class AttractionsFragment extends Fragment {
         String subCategory; // Sights, Food, Nightlife, Stay, Beaches
         String address;
         int priority;
+        String photoUrl;
+        boolean isSelected = false;
+        float rating;
+
+        Place() {
+            // Random rating between 3.5 and 4.9
+            this.rating = 3.5f + new Random().nextFloat() * (4.9f - 3.5f);
+        }
     }
 
     @Nullable
@@ -138,7 +152,6 @@ public class AttractionsFragment extends Fragment {
 
     void geocodeAndFetch() {
         try {
-            // Use Nominatim for better geocoding results
             String encoded = URLEncoder.encode(destination, "UTF-8");
             String geoUrl = "https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=json&limit=1";
 
@@ -162,8 +175,7 @@ public class AttractionsFragment extends Fragment {
                             JSONObject loc = results.getJSONObject(0);
                             double lat = loc.getDouble("lat");
                             double lon = loc.getDouble("lon");
-                            String displayName = loc.optString("display_name", destination);
-                            mainHandler.post(() -> fetchOverpassAttractions(lat, lon, displayName));
+                            mainHandler.post(() -> fetchOverpassAttractions(lat, lon));
                         } else {
                             mainHandler.post(() -> showDemoData());
                         }
@@ -177,24 +189,18 @@ public class AttractionsFragment extends Fragment {
         }
     }
 
-    void fetchOverpassAttractions(double lat, double lon, String fullAddress) {
-        // Querying Overpass with specific filters for high accuracy
+    void fetchOverpassAttractions(double lat, double lon) {
         String q = "[out:json][timeout:30];"
             + "("
-            // Tourism/Sights
             + "node(around:10000," + lat + "," + lon + ")[\"tourism\"~\"attraction|museum|viewpoint|gallery|zoo|theme_park\"];"
             + "node(around:10000," + lat + "," + lon + ")[\"historic\"~\"monument|castle|fort|palace\"];"
-            // Food & Drink
             + "node(around:5000," + lat + "," + lon + ")[\"amenity\"~\"restaurant|cafe|fast_food\"];"
-            // Nightlife
             + "node(around:5000," + lat + "," + lon + ")[\"amenity\"~\"nightclub|pub|bar\"];"
-            // Stay
             + "node(around:5000," + lat + "," + lon + ")[\"tourism\"~\"hotel|hostel|guest_house\"];"
-            // Beaches
             + "node(around:20000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
             + "way(around:20000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
             + ");"
-            + "out tags center 100;";
+            + "out tags center 60;";
 
         String url;
         try {
@@ -258,7 +264,6 @@ public class AttractionsFragment extends Fragment {
                 String amenity  = tags.optString("amenity",  "");
                 String natural  = tags.optString("natural",  "");
                 
-                // Categorization
                 if (natural.equals("beach")) {
                     place.category = "🏖️ Beach";
                     place.subCategory = "Beaches";
@@ -292,12 +297,50 @@ public class AttractionsFragment extends Fragment {
             allFetchedPlaces = new ArrayList<>(seen.values());
             allFetchedPlaces.sort((a, b) -> Integer.compare(a.priority, b.priority));
 
-            if (allFetchedPlaces.isEmpty()) showDemoData();
-            else applyFilter();
+            if (allFetchedPlaces.isEmpty()) {
+                showDemoData();
+            } else {
+                fetchPhotosForPlaces(allFetchedPlaces);
+                applyFilter();
+            }
 
         } catch (Exception e) {
             Log.e(TAG, "Error parsing JSON", e);
             showDemoData();
+        }
+    }
+
+    private void fetchPhotosForPlaces(List<Place> places) {
+        for (Place place : places) {
+            try {
+                String wikiUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + URLEncoder.encode(place.name, "UTF-8");
+                Request request = new Request.Builder().url(wikiUrl).build();
+                httpClient.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(@NonNull Call call, @NonNull IOException e) {}
+
+                    @Override
+                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            try {
+                                String body = response.body().string();
+                                JSONObject json = new JSONObject(body);
+                                JSONObject thumb = json.optJSONObject("thumbnail");
+                                if (thumb != null) {
+                                    place.photoUrl = thumb.optString("source");
+                                    mainHandler.post(() -> {
+                                        if (placeAdapter != null) placeAdapter.notifyDataSetChanged();
+                                    });
+                                }
+                            } catch (Exception e) {
+                                Log.e(TAG, "Wiki parse error", e);
+                            }
+                        }
+                    }
+                });
+            } catch (Exception e) {
+                Log.e(TAG, "Wiki fetch setup error", e);
+            }
         }
     }
 
@@ -314,7 +357,6 @@ public class AttractionsFragment extends Fragment {
     }
 
     void showDemoData() {
-        // Fallback demo data only if API fails completely
         ArrayList<Place> list = new ArrayList<>();
         add(list, "🏖️ " + destination + " Main Beach", "Beach", "Beaches", "Coastline", 1);
         add(list, "🍴 " + destination + " Local Kitchen", "Restaurant", "Food", "Main St", 4);
@@ -322,6 +364,7 @@ public class AttractionsFragment extends Fragment {
         add(list, "🏛️ " + destination + " Heritage Museum", "Museum", "Sights", "Old Town", 2);
         
         allFetchedPlaces = list;
+        fetchPhotosForPlaces(allFetchedPlaces);
         applyFilter();
     }
 
@@ -332,24 +375,81 @@ public class AttractionsFragment extends Fragment {
     void showPlaces(ArrayList<Place> places) {
         tvLoading.setVisibility(View.GONE);
         listAttractions.setVisibility(View.VISIBLE);
+        
+        placeAdapter = new PlaceAdapter(places);
+        listAttractions.setAdapter(placeAdapter);
+    }
 
-        ArrayAdapter<Place> adapter = new ArrayAdapter<Place>(requireContext(),
-                R.layout.item_attraction, places) {
-            @NonNull
-            @Override
-            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-                if (convertView == null) {
-                    convertView = LayoutInflater.from(getContext())
-                            .inflate(R.layout.item_attraction, parent, false);
-                }
-                Place place = getItem(position);
-                ((TextView) convertView.findViewById(R.id.tvAttractionNumber)).setText(String.valueOf(position + 1));
-                ((TextView) convertView.findViewById(R.id.tvAttractionName)).setText(place.name);
-                ((TextView) convertView.findViewById(R.id.tvAttractionCategory)).setText(place.category);
-                ((TextView) convertView.findViewById(R.id.tvAttractionAddress)).setText(place.address);
-                return convertView;
+    class PlaceAdapter extends BaseAdapter {
+        List<Place> places;
+
+        PlaceAdapter(List<Place> places) {
+            this.places = places;
+        }
+
+        @Override
+        public int getCount() {
+            return places.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return places.get(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            if (convertView == null) {
+                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_attraction, parent, false);
             }
-        };
-        listAttractions.setAdapter(adapter);
+
+            Place place = (Place) getItem(position);
+            
+            ImageView ivPhoto = convertView.findViewById(R.id.ivPlacePhoto);
+            TextView tvName = convertView.findViewById(R.id.tvAttractionName);
+            TextView tvCategory = convertView.findViewById(R.id.tvAttractionCategory);
+            TextView tvAddress = convertView.findViewById(R.id.tvAttractionAddress);
+            TextView tvRating = convertView.findViewById(R.id.tvRating);
+            MaterialButton btnSelect = convertView.findViewById(R.id.btnSelect);
+
+            tvName.setText(place.name);
+            tvCategory.setText(place.category);
+            tvAddress.setText(place.address);
+            tvRating.setText(String.format(Locale.getDefault(), "★ %.1f", place.rating));
+
+            // Load Image with Glide
+            Glide.with(getContext())
+                    .load(place.photoUrl)
+                    .placeholder(android.R.color.darker_gray)
+                    .error(android.R.color.black)
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .centerCrop()
+                    .into(ivPhoto);
+
+            // Select button logic
+            if (place.isSelected) {
+                btnSelect.setText("✓ Selected");
+                btnSelect.setTextColor(getResources().getColor(R.color.white, null));
+                btnSelect.setBackgroundColor(getResources().getColor(R.color.accent_teal, null));
+                btnSelect.setStrokeColorResource(android.R.color.transparent);
+            } else {
+                btnSelect.setText("Select");
+                btnSelect.setTextColor(getResources().getColor(R.color.accent_blue, null));
+                btnSelect.setBackgroundColor(android.R.color.transparent);
+                btnSelect.setStrokeColorResource(R.color.accent_blue);
+            }
+
+            btnSelect.setOnClickListener(v -> {
+                place.isSelected = !place.isSelected;
+                notifyDataSetChanged();
+            });
+
+            return convertView;
+        }
     }
 }

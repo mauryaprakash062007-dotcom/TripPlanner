@@ -14,4 +14,5 @@
     <color name="check_done">#2DD4BF</color>
     <color name="weather_card">#1E2235</color>
     <color name="rain_color">#6C8EFF</color>
+    <color name="white">#FFFFFF</color>
 </resources>

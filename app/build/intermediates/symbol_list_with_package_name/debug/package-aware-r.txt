@@ -2105,6 +2105,7 @@ color text_secondary
 color tooltip_background_dark
 color tooltip_background_light
 color weather_card
+color white
 dimen abc_action_bar_content_inset_material
 dimen abc_action_bar_content_inset_with_nav
 dimen abc_action_bar_default_height_material
@@ -2982,6 +2983,7 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
+drawable bottom_gradient
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
 drawable btn_checkbox_unchecked_mtrl
@@ -3082,6 +3084,7 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable number_bg
+drawable rating_bg
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3191,6 +3194,7 @@ id btnLogout
 id btnNewTrip
 id btnPlanTrip
 id btnSave
+id btnSelect
 id btnSignup
 id btnStartDate
 id buttonPanel
@@ -3332,6 +3336,7 @@ id frost
 id fullscreen_header
 id ghost_view
 id ghost_view_holder
+id glide_custom_view_target_tag
 id gone
 id graph
 id graph_wrap
@@ -3358,6 +3363,7 @@ id invisible
 id inward
 id italic
 id item_touch_helper_previous_elevation
+id ivPlacePhoto
 id jumpToEnd
 id jumpToStart
 id labeled
@@ -3612,7 +3618,6 @@ id triangle
 id tvAttractionAddress
 id tvAttractionCategory
 id tvAttractionName
-id tvAttractionNumber
 id tvAttractionsLoading
 id tvDayCondition
 id tvDayDate
@@ -3635,6 +3640,7 @@ id tvNoTrips
 id tvPackEmoji
 id tvPackProgress
 id tvRainWarning
+id tvRating
 id tvRemaining
 id tvSpent
 id tvStartDate

@@ -8,27 +8,28 @@ com.example.tripplanner.app-lifecycle-viewmodel-2.6.1-6 C:\Users\MAURYA PRAKASH\
 com.example.tripplanner.app-recyclerview-1.1.0-7 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\5756d943ab0c6508158c7ccdb3d66f91\transformed\recyclerview-1.1.0\res
 com.example.tripplanner.app-lifecycle-livedata-core-2.6.1-8 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\59be872dd741da2aefad29199a5c688e\transformed\lifecycle-livedata-core-2.6.1\res
 com.example.tripplanner.app-jetified-lifecycle-process-2.6.1-9 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\64a43ba5e267ff1bec7f2dbd5a6fc86a\transformed\jetified-lifecycle-process-2.6.1\res
-com.example.tripplanner.app-jetified-annotation-experimental-1.3.0-10 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\7d240c2876715f64c8f86f348098b6d9\transformed\jetified-annotation-experimental-1.3.0\res
-com.example.tripplanner.app-lifecycle-runtime-2.6.1-11 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\8eec3305fa08ab6c364850fac4f2f3da\transformed\lifecycle-runtime-2.6.1\res
-com.example.tripplanner.app-jetified-emoji2-views-helper-1.2.0-12 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\8fcc853f08bc42045cd980d63acc7c5a\transformed\jetified-emoji2-views-helper-1.2.0\res
-com.example.tripplanner.app-transition-1.2.0-13 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\90714f149f25b0cfa5dbdeb0b88fec36\transformed\transition-1.2.0\res
-com.example.tripplanner.app-jetified-savedstate-1.2.1-14 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\90d8c277878f3e93aea5f5378d390fb3\transformed\jetified-savedstate-1.2.1\res
-com.example.tripplanner.app-jetified-core-ktx-1.9.0-15 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a419870f824a5ed52312905adad0dfd9\transformed\jetified-core-ktx-1.9.0\res
-com.example.tripplanner.app-jetified-appcompat-resources-1.6.1-16 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a6e5f6212cc01c97226962f50ee2288b\transformed\jetified-appcompat-resources-1.6.1\res
-com.example.tripplanner.app-jetified-activity-1.8.0-17 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a99a550775fc239fa35ebbba720a5cdf\transformed\jetified-activity-1.8.0\res
-com.example.tripplanner.app-jetified-emoji2-1.2.0-18 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\acd7b7be712c1ada299bcfc81b726076\transformed\jetified-emoji2-1.2.0\res
-com.example.tripplanner.app-drawerlayout-1.1.1-19 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\b2c0baf04ac6533147f9384ef4e31969\transformed\drawerlayout-1.1.1\res
-com.example.tripplanner.app-fragment-1.3.6-20 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c3dc071c2c0ff1053390120e17d4afaf\transformed\fragment-1.3.6\res
-com.example.tripplanner.app-jetified-lifecycle-viewmodel-savedstate-2.6.1-21 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c6b758a0250d1d72a62de869337013f9\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\res
-com.example.tripplanner.app-cardview-1.0.0-22 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c8bdece1432d6bd447ee6e396aae1f67\transformed\cardview-1.0.0\res
-com.example.tripplanner.app-core-1.9.0-23 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\cf89ab1ea7cc19352d4f47103c74320d\transformed\core-1.9.0\res
-com.example.tripplanner.app-core-runtime-2.2.0-24 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\d4c59bd9210ecc79c0b9d6f2393b2a4a\transformed\core-runtime-2.2.0\res
-com.example.tripplanner.app-jetified-profileinstaller-1.3.0-25 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\d68980383f0015e28b8eec4415ed3978\transformed\jetified-profileinstaller-1.3.0\res
-com.example.tripplanner.app-material-1.11.0-26 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\e004d834515d4821022ab53ea1e4b61a\transformed\material-1.11.0\res
-com.example.tripplanner.app-pngs-27 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\generated\res\pngs\debug
-com.example.tripplanner.app-resValues-28 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\generated\res\resValues\debug
-com.example.tripplanner.app-packageDebugResources-29 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
-com.example.tripplanner.app-packageDebugResources-30 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
-com.example.tripplanner.app-merged_res-31 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\merged_res\debug
-com.example.tripplanner.app-debug-32 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\src\debug\res
-com.example.tripplanner.app-main-33 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\src\main\res
+com.example.tripplanner.app-jetified-glide-4.16.0-10 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\737912539e22e85aa4a0257925de9b15\transformed\jetified-glide-4.16.0\res
+com.example.tripplanner.app-jetified-annotation-experimental-1.3.0-11 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\7d240c2876715f64c8f86f348098b6d9\transformed\jetified-annotation-experimental-1.3.0\res
+com.example.tripplanner.app-lifecycle-runtime-2.6.1-12 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\8eec3305fa08ab6c364850fac4f2f3da\transformed\lifecycle-runtime-2.6.1\res
+com.example.tripplanner.app-jetified-emoji2-views-helper-1.2.0-13 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\8fcc853f08bc42045cd980d63acc7c5a\transformed\jetified-emoji2-views-helper-1.2.0\res
+com.example.tripplanner.app-transition-1.2.0-14 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\90714f149f25b0cfa5dbdeb0b88fec36\transformed\transition-1.2.0\res
+com.example.tripplanner.app-jetified-savedstate-1.2.1-15 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\90d8c277878f3e93aea5f5378d390fb3\transformed\jetified-savedstate-1.2.1\res
+com.example.tripplanner.app-jetified-core-ktx-1.9.0-16 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a419870f824a5ed52312905adad0dfd9\transformed\jetified-core-ktx-1.9.0\res
+com.example.tripplanner.app-jetified-appcompat-resources-1.6.1-17 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a6e5f6212cc01c97226962f50ee2288b\transformed\jetified-appcompat-resources-1.6.1\res
+com.example.tripplanner.app-jetified-activity-1.8.0-18 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\a99a550775fc239fa35ebbba720a5cdf\transformed\jetified-activity-1.8.0\res
+com.example.tripplanner.app-jetified-emoji2-1.2.0-19 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\acd7b7be712c1ada299bcfc81b726076\transformed\jetified-emoji2-1.2.0\res
+com.example.tripplanner.app-drawerlayout-1.1.1-20 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\b2c0baf04ac6533147f9384ef4e31969\transformed\drawerlayout-1.1.1\res
+com.example.tripplanner.app-fragment-1.3.6-21 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c3dc071c2c0ff1053390120e17d4afaf\transformed\fragment-1.3.6\res
+com.example.tripplanner.app-jetified-lifecycle-viewmodel-savedstate-2.6.1-22 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c6b758a0250d1d72a62de869337013f9\transformed\jetified-lifecycle-viewmodel-savedstate-2.6.1\res
+com.example.tripplanner.app-cardview-1.0.0-23 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\c8bdece1432d6bd447ee6e396aae1f67\transformed\cardview-1.0.0\res
+com.example.tripplanner.app-core-1.9.0-24 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\cf89ab1ea7cc19352d4f47103c74320d\transformed\core-1.9.0\res
+com.example.tripplanner.app-core-runtime-2.2.0-25 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\d4c59bd9210ecc79c0b9d6f2393b2a4a\transformed\core-runtime-2.2.0\res
+com.example.tripplanner.app-jetified-profileinstaller-1.3.0-26 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\d68980383f0015e28b8eec4415ed3978\transformed\jetified-profileinstaller-1.3.0\res
+com.example.tripplanner.app-material-1.11.0-27 C:\Users\MAURYA PRAKASH\.gradle\caches\transforms-3\e004d834515d4821022ab53ea1e4b61a\transformed\material-1.11.0\res
+com.example.tripplanner.app-pngs-28 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\generated\res\pngs\debug
+com.example.tripplanner.app-resValues-29 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\generated\res\resValues\debug
+com.example.tripplanner.app-packageDebugResources-30 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\incremental\debug\packageDebugResources\merged.dir
+com.example.tripplanner.app-packageDebugResources-31 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\incremental\debug\packageDebugResources\stripped.dir
+com.example.tripplanner.app-merged_res-32 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\build\intermediates\merged_res\debug
+com.example.tripplanner.app-debug-33 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\src\debug\res
+com.example.tripplanner.app-main-34 C:\Users\MAURYA PRAKASH\Downloads\Trip_Planner (2)\Trip_Planner\Trip_v2\Trip_Planner\Trip_Planner_Fixed\app\src\main\res
