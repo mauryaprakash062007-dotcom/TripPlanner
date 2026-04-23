@@ -4,54 +4,35 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/surface_dark"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
-    android:layout_marginBottom="16dp"
-    android:layout_marginHorizontal="4dp">
+    app:cardCornerRadius="14dp"
+    app:cardElevation="0dp"
+    android:layout_marginBottom="12dp"
+    android:layout_marginHorizontal="8dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="180dp">
-
-            <ImageView
-                android:id="@+id/ivPlacePhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:background="#222222" />
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="80dp"
-                android:layout_alignParentBottom="true"
-                android:background="@drawable/bottom_gradient" />
-
-            <TextView
-                android:id="@+id/tvRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentEnd="true"
-                android:layout_margin="12dp"
-                android:background="@drawable/rating_bg"
-                android:paddingHorizontal="8dp"
-                android:paddingVertical="4dp"
-                android:text="★ 4.5"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textStyle="bold" />
-        </RelativeLayout>
+        <TextView
+            android:id="@+id/tvAttractionNumber"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/rating_bg"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/white"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginEnd="16dp"/>
 
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_weight="1"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/tvAttractionName"
@@ -59,14 +40,14 @@
                 android:layout_height="wrap_content"
                 android:text="Place Name"
                 android:textColor="@color/text_primary"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:textStyle="bold" />
 
             <TextView
                 android:id="@+id/tvAttractionCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:text="Category"
                 android:textColor="@color/accent_teal"
                 android:textSize="13sp"
@@ -76,32 +57,39 @@
                 android:id="@+id/tvAttractionAddress"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="2dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:text="Address"
                 android:textColor="@color/text_secondary"
                 android:textSize="13sp" />
 
-            <RelativeLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/tvAttractionRating"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSelect"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:text="Select"
-                    android:textAllCaps="false"
-                    android:textColor="@color/accent_blue"
-                    app:cornerRadius="20dp"
-                    app:strokeColor="@color/accent_blue" />
-
-            </RelativeLayout>
-
+                android:layout_marginTop="4dp"
+                android:text="★ 4.2"
+                android:textColor="@color/accent_blue"
+                android:textSize="13sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSelect"
+            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select"
+            android:textAllCaps="false"
+            android:textColor="@color/accent_blue"
+            app:cornerRadius="20dp"
+            app:strokeColor="@color/accent_blue"
+            android:layout_marginStart="8dp"
+            android:paddingHorizontal="12dp"
+            android:minWidth="0dp"
+            android:insetTop="0dp"
+            android:insetBottom="0dp"/>
+
     </LinearLayout>
 </androidx.cardview.widget.CardView>

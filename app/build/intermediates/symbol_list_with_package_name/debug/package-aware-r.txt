@@ -3363,7 +3363,6 @@ id invisible
 id inward
 id italic
 id item_touch_helper_previous_elevation
-id ivPlacePhoto
 id jumpToEnd
 id jumpToStart
 id labeled
@@ -3618,6 +3617,8 @@ id triangle
 id tvAttractionAddress
 id tvAttractionCategory
 id tvAttractionName
+id tvAttractionNumber
+id tvAttractionRating
 id tvAttractionsLoading
 id tvDayCondition
 id tvDayDate
@@ -3640,7 +3641,6 @@ id tvNoTrips
 id tvPackEmoji
 id tvPackProgress
 id tvRainWarning
-id tvRating
 id tvRemaining
 id tvSpent
 id tvStartDate

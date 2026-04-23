@@ -71,7 +71,6 @@ id etPassword
 id etPhone
 id etTotalBudget
 id etTransport
-id ivPlacePhoto
 id listAttractions
 id listPackItems
 id listTripHistory
@@ -81,6 +80,8 @@ id tipsContainer
 id tvAttractionAddress
 id tvAttractionCategory
 id tvAttractionName
+id tvAttractionNumber
+id tvAttractionRating
 id tvAttractionsLoading
 id tvDayCondition
 id tvDayDate
@@ -103,7 +104,6 @@ id tvNoTrips
 id tvPackEmoji
 id tvPackProgress
 id tvRainWarning
-id tvRating
 id tvRemaining
 id tvSpent
 id tvStartDate

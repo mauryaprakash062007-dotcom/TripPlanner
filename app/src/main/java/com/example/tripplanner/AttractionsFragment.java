@@ -7,8 +7,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.ImageView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -16,9 +15,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions;
-import com.google.android.material.button.MaterialButton;
 import com.google.android.material.chip.ChipGroup;
 
 import org.json.JSONArray;
@@ -30,7 +26,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Random;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import okhttp3.Call;
@@ -42,6 +38,14 @@ import okhttp3.Response;
 public class AttractionsFragment extends Fragment {
 
     private static final String TAG = "AttractionsFragment";
+
+    // 3 Overpass mirrors — app tries each one until one works
+    private static final String[] OVERPASS_MIRRORS = {
+            "https://overpass.kumi.systems/api/interpreter",
+            "https://overpass-api.de/api/interpreter",
+            "https://overpass.openstreetmap.ru/api/interpreter"
+    };
+
     String destination;
     List<String> selectedActivities = new ArrayList<>();
 
@@ -49,27 +53,25 @@ public class AttractionsFragment extends Fragment {
     ListView listAttractions;
     ChipGroup chipGroupFilters;
 
-    OkHttpClient httpClient = new OkHttpClient();
+    // Increased timeouts so Overpass has time to respond
+    OkHttpClient httpClient = new OkHttpClient.Builder()
+            .connectTimeout(30, TimeUnit.SECONDS)
+            .readTimeout(90, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build();
+
     Handler mainHandler = new Handler(Looper.getMainLooper());
-    
+
     List<Place> allFetchedPlaces = new ArrayList<>();
     String currentFilter = "All";
-    PlaceAdapter placeAdapter;
 
     static class Place {
         String name;
         String category;
-        String subCategory; // Sights, Food, Nightlife, Stay, Beaches
+        String subCategory;
         String address;
         int priority;
-        String photoUrl;
-        boolean isSelected = false;
         float rating;
-
-        Place() {
-            // Random rating between 3.5 and 4.9
-            this.rating = 3.5f + new Random().nextFloat() * (4.9f - 3.5f);
-        }
     }
 
     @Nullable
@@ -120,15 +122,12 @@ public class AttractionsFragment extends Fragment {
             else if (checkedId == R.id.chipNightlife) currentFilter = "Nightlife";
             else if (checkedId == R.id.chipStay) currentFilter = "Stay";
             else if (checkedId == R.id.chipBeaches) currentFilter = "Beaches";
-            
             applyFilter();
         });
     }
 
     private void applyFilter() {
-        if (allFetchedPlaces.isEmpty()) {
-            return;
-        }
+        if (allFetchedPlaces.isEmpty()) return;
 
         List<Place> filtered;
         if (currentFilter.equals("All")) {
@@ -151,6 +150,10 @@ public class AttractionsFragment extends Fragment {
     }
 
     void geocodeAndFetch() {
+        tvLoading.setText("Finding places in " + destination + "...");
+        tvLoading.setVisibility(View.VISIBLE);
+        listAttractions.setVisibility(View.GONE);
+
         try {
             String encoded = URLEncoder.encode(destination, "UTF-8");
             String geoUrl = "https://nominatim.openstreetmap.org/search?q=" + encoded + "&format=json&limit=1";
@@ -163,6 +166,7 @@ public class AttractionsFragment extends Fragment {
             httpClient.newCall(geoRequest).enqueue(new Callback() {
                 @Override
                 public void onFailure(@NonNull Call call, @NonNull IOException e) {
+                    Log.e(TAG, "Geocode failed: " + e.getMessage());
                     mainHandler.post(() -> showDemoData());
                 }
 
@@ -175,11 +179,14 @@ public class AttractionsFragment extends Fragment {
                             JSONObject loc = results.getJSONObject(0);
                             double lat = loc.getDouble("lat");
                             double lon = loc.getDouble("lon");
-                            mainHandler.post(() -> fetchOverpassAttractions(lat, lon));
+                            Log.d(TAG, "Geocoded " + destination + " -> " + lat + "," + lon);
+                            fetchWithMirror(lat, lon, 0);
                         } else {
+                            Log.e(TAG, "Geocode returned no results for: " + destination);
                             mainHandler.post(() -> showDemoData());
                         }
                     } catch (Exception e) {
+                        Log.e(TAG, "Geocode parse error: " + e.getMessage());
                         mainHandler.post(() -> showDemoData());
                     }
                 }
@@ -189,26 +196,49 @@ public class AttractionsFragment extends Fragment {
         }
     }
 
-    void fetchOverpassAttractions(double lat, double lon) {
-        String q = "[out:json][timeout:30];"
-            + "("
-            + "node(around:10000," + lat + "," + lon + ")[\"tourism\"~\"attraction|museum|viewpoint|gallery|zoo|theme_park\"];"
-            + "node(around:10000," + lat + "," + lon + ")[\"historic\"~\"monument|castle|fort|palace\"];"
-            + "node(around:5000," + lat + "," + lon + ")[\"amenity\"~\"restaurant|cafe|fast_food\"];"
-            + "node(around:5000," + lat + "," + lon + ")[\"amenity\"~\"nightclub|pub|bar\"];"
-            + "node(around:5000," + lat + "," + lon + ")[\"tourism\"~\"hotel|hostel|guest_house\"];"
-            + "node(around:20000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
-            + "way(around:20000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
-            + ");"
-            + "out tags center 60;";
+    void fetchWithMirror(double lat, double lon, int mirrorIndex) {
+        if (mirrorIndex >= OVERPASS_MIRRORS.length) {
+            Log.e(TAG, "All Overpass mirrors failed, showing demo data");
+            mainHandler.post(this::showDemoData);
+            return;
+        }
+
+        String q = "[out:json][timeout:60];"
+                + "("
+                // Sights
+                + "node(around:15000," + lat + "," + lon + ")[\"tourism\"~\"attraction|museum|viewpoint|gallery|zoo|theme_park|artwork\"];"
+                + "way(around:15000," + lat + "," + lon + ")[\"tourism\"~\"attraction|museum|viewpoint|gallery|zoo|theme_park\"];"
+                + "node(around:15000," + lat + "," + lon + ")[\"historic\"~\"monument|castle|fort|palace|ruins|temple|church|mosque\"];"
+                + "way(around:15000," + lat + "," + lon + ")[\"historic\"~\"monument|castle|fort|palace|ruins|temple|church|mosque\"];"
+                + "node(around:15000," + lat + "," + lon + ")[\"amenity\"~\"place_of_worship|cinema|theatre|library\"];"
+                // Food
+                + "node(around:8000," + lat + "," + lon + ")[\"amenity\"~\"restaurant|cafe|fast_food|food_court|bakery|ice_cream\"];"
+                + "way(around:8000," + lat + "," + lon + ")[\"amenity\"~\"restaurant|cafe|fast_food|food_court\"];"
+                // Nightlife
+                + "node(around:8000," + lat + "," + lon + ")[\"amenity\"~\"nightclub|pub|bar|brewery\"];"
+                + "way(around:8000," + lat + "," + lon + ")[\"amenity\"~\"nightclub|pub|bar\"];"
+                // Stay
+                + "node(around:8000," + lat + "," + lon + ")[\"tourism\"~\"hotel|hostel|guest_house|motel|resort\"];"
+                + "way(around:8000," + lat + "," + lon + ")[\"tourism\"~\"hotel|hostel|guest_house|motel|resort\"];"
+                // Beaches — ways + relations because Indian beaches are polygons not points
+                + "node(around:30000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
+                + "way(around:30000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
+                + "relation(around:30000," + lat + "," + lon + ")[\"natural\"=\"beach\"];"
+                + "node(around:30000," + lat + "," + lon + ")[\"leisure\"=\"beach_resort\"];"
+                + "way(around:30000," + lat + "," + lon + ")[\"leisure\"=\"beach_resort\"];"
+                + ");"
+                + "out tags center 500;";
 
         String url;
         try {
-            url = "https://overpass-api.de/api/interpreter?data=" + URLEncoder.encode(q, "UTF-8");
+            url = OVERPASS_MIRRORS[mirrorIndex] + "?data=" + URLEncoder.encode(q, "UTF-8");
         } catch (Exception e) {
-            showDemoData();
+            fetchWithMirror(lat, lon, mirrorIndex + 1);
             return;
         }
+
+        Log.d(TAG, "Trying Overpass mirror " + mirrorIndex + ": " + OVERPASS_MIRRORS[mirrorIndex]);
+        mainHandler.post(() -> tvLoading.setText("Loading places... (attempt " + (mirrorIndex + 1) + ")"));
 
         Request request = new Request.Builder()
                 .url(url)
@@ -218,16 +248,24 @@ public class AttractionsFragment extends Fragment {
         httpClient.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NonNull Call call, @NonNull IOException e) {
-                mainHandler.post(() -> showDemoData());
+                Log.e(TAG, "Mirror " + mirrorIndex + " failed: " + e.getMessage());
+                fetchWithMirror(lat, lon, mirrorIndex + 1);
             }
 
             @Override
             public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
                 if (!response.isSuccessful()) {
-                    mainHandler.post(() -> showDemoData());
+                    Log.e(TAG, "Mirror " + mirrorIndex + " HTTP error: " + response.code());
+                    fetchWithMirror(lat, lon, mirrorIndex + 1);
                     return;
                 }
                 String body = response.body().string();
+                if (body.length() < 50 || !body.contains("elements")) {
+                    Log.e(TAG, "Mirror " + mirrorIndex + " bad response, length=" + body.length());
+                    fetchWithMirror(lat, lon, mirrorIndex + 1);
+                    return;
+                }
+                Log.d(TAG, "Mirror " + mirrorIndex + " OK, size=" + body.length());
                 mainHandler.post(() -> parseOverpassAndShow(body));
             }
         });
@@ -238,9 +276,12 @@ public class AttractionsFragment extends Fragment {
             JSONObject root = new JSONObject(json);
             JSONArray elements = root.optJSONArray("elements");
             if (elements == null || elements.length() == 0) {
+                Log.e(TAG, "Overpass returned 0 elements");
                 showDemoData();
                 return;
             }
+
+            Log.d(TAG, "Overpass returned " + elements.length() + " elements");
 
             LinkedHashMap<String, Place> seen = new LinkedHashMap<>();
 
@@ -251,6 +292,7 @@ public class AttractionsFragment extends Fragment {
 
                 String name = tags.optString("name", "").trim();
                 if (name.isEmpty()) name = tags.optString("name:en", "").trim();
+                if (name.isEmpty()) name = tags.optString("official_name", "").trim();
                 if (name.isEmpty()) continue;
 
                 String key = name.toLowerCase(Locale.getDefault());
@@ -258,38 +300,60 @@ public class AttractionsFragment extends Fragment {
 
                 Place place = new Place();
                 place.name = name;
+                place.rating = 3.5f + (float)(Math.random() * 1.4f);
 
                 String tourism  = tags.optString("tourism",  "");
                 String historic = tags.optString("historic", "");
                 String amenity  = tags.optString("amenity",  "");
                 String natural  = tags.optString("natural",  "");
-                
-                if (natural.equals("beach")) {
+                String leisure  = tags.optString("leisure",  "");
+
+                if (natural.equals("beach") || leisure.equals("beach_resort") || tourism.equals("beach")) {
                     place.category = "🏖️ Beach";
                     place.subCategory = "Beaches";
                     place.priority = 1;
-                } else if (amenity.equals("restaurant") || amenity.equals("cafe") || amenity.equals("fast_food")) {
-                    place.category = (amenity.equals("cafe") ? "☕ " : "🍴 ") + formatCategory(amenity);
+                } else if (amenity.equals("restaurant") || amenity.equals("cafe")
+                        || amenity.equals("fast_food") || amenity.equals("food_court")
+                        || amenity.equals("bakery") || amenity.equals("ice_cream")) {
+                    String icon = amenity.equals("cafe") ? "☕" : amenity.equals("bakery") ? "🥐" : "🍴";
+                    place.category = icon + " " + formatCategory(amenity);
                     place.subCategory = "Food";
                     place.priority = 4;
-                } else if (amenity.equals("nightclub") || amenity.equals("pub") || amenity.equals("bar")) {
-                    place.category = (amenity.equals("nightclub") ? "💃 " : "🍺 ") + formatCategory(amenity);
+                } else if (amenity.equals("nightclub") || amenity.equals("pub")
+                        || amenity.equals("bar") || amenity.equals("brewery")) {
+                    String icon = amenity.equals("nightclub") ? "💃" : "🍺";
+                    place.category = icon + " " + formatCategory(amenity);
                     place.subCategory = "Nightlife";
                     place.priority = 5;
-                } else if (tourism.equals("hotel") || tourism.equals("hostel") || tourism.equals("guest_house")) {
+                } else if (tourism.equals("hotel") || tourism.equals("hostel")
+                        || tourism.equals("guest_house") || tourism.equals("motel")
+                        || tourism.equals("resort")) {
                     place.category = "🏨 " + formatCategory(tourism);
                     place.subCategory = "Stay";
                     place.priority = 6;
                 } else {
-                    String sub = !tourism.isEmpty() ? tourism : (!historic.isEmpty() ? historic : "Sights");
-                    place.category = "🏛️ " + formatCategory(sub);
+                    String subType = !tourism.isEmpty() ? tourism
+                            : !historic.isEmpty() ? historic
+                            : !amenity.isEmpty() ? amenity
+                            : "Attraction";
+                    String icon = !historic.isEmpty() ? "🗿" : "🏛️";
+                    place.category = icon + " " + formatCategory(subType);
                     place.subCategory = "Sights";
                     place.priority = 2;
                 }
 
-                String addr = tags.optString("addr:street", "");
-                if (addr.isEmpty()) addr = tags.optString("addr:city", destination);
-                place.address = addr;
+                String street = tags.optString("addr:street", "");
+                String city   = tags.optString("addr:city", "");
+                String suburb = tags.optString("addr:suburb", "");
+                if (!street.isEmpty() && !city.isEmpty()) {
+                    place.address = street + ", " + city;
+                } else if (!suburb.isEmpty()) {
+                    place.address = suburb + ", " + destination;
+                } else if (!city.isEmpty()) {
+                    place.address = city;
+                } else {
+                    place.address = destination;
+                }
 
                 seen.put(key, place);
             }
@@ -297,50 +361,14 @@ public class AttractionsFragment extends Fragment {
             allFetchedPlaces = new ArrayList<>(seen.values());
             allFetchedPlaces.sort((a, b) -> Integer.compare(a.priority, b.priority));
 
-            if (allFetchedPlaces.isEmpty()) {
-                showDemoData();
-            } else {
-                fetchPhotosForPlaces(allFetchedPlaces);
-                applyFilter();
-            }
+            Log.d(TAG, "Parsed " + allFetchedPlaces.size() + " unique places");
+
+            if (allFetchedPlaces.isEmpty()) showDemoData();
+            else applyFilter();
 
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing JSON", e);
+            Log.e(TAG, "Parse error: " + e.getMessage());
             showDemoData();
-        }
-    }
-
-    private void fetchPhotosForPlaces(List<Place> places) {
-        for (Place place : places) {
-            try {
-                String wikiUrl = "https://en.wikipedia.org/api/rest_v1/page/summary/" + URLEncoder.encode(place.name, "UTF-8");
-                Request request = new Request.Builder().url(wikiUrl).build();
-                httpClient.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NonNull Call call, @NonNull IOException e) {}
-
-                    @Override
-                    public void onResponse(@NonNull Call call, @NonNull Response response) throws IOException {
-                        if (response.isSuccessful()) {
-                            try {
-                                String body = response.body().string();
-                                JSONObject json = new JSONObject(body);
-                                JSONObject thumb = json.optJSONObject("thumbnail");
-                                if (thumb != null) {
-                                    place.photoUrl = thumb.optString("source");
-                                    mainHandler.post(() -> {
-                                        if (placeAdapter != null) placeAdapter.notifyDataSetChanged();
-                                    });
-                                }
-                            } catch (Exception e) {
-                                Log.e(TAG, "Wiki parse error", e);
-                            }
-                        }
-                    }
-                });
-            } catch (Exception e) {
-                Log.e(TAG, "Wiki fetch setup error", e);
-            }
         }
     }
 
@@ -358,98 +386,53 @@ public class AttractionsFragment extends Fragment {
 
     void showDemoData() {
         ArrayList<Place> list = new ArrayList<>();
-        add(list, "🏖️ " + destination + " Main Beach", "Beach", "Beaches", "Coastline", 1);
-        add(list, "🍴 " + destination + " Local Kitchen", "Restaurant", "Food", "Main St", 4);
-        add(list, "🏨 " + destination + " Grand Hotel", "Hotel", "Stay", "City Center", 6);
-        add(list, "🏛️ " + destination + " Heritage Museum", "Museum", "Sights", "Old Town", 2);
-        
+        add(list, destination + " Central Beach",   "🏖️ Beach",      "Beaches",   "Coastline, " + destination,        1, 4.5f);
+        add(list, destination + " Heritage Museum", "🏛️ Museum",     "Sights",    "Old Town, " + destination,         2, 4.2f);
+        add(list, destination + " Fort",            "🗿 Fort",        "Sights",    "City Center, " + destination,     2, 4.1f);
+        add(list, destination + " Local Kitchen",   "🍴 Restaurant", "Food",      "Main Street, " + destination,     4, 4.3f);
+        add(list, destination + " Seafood Corner",  "🍴 Restaurant", "Food",      "Beach Road, " + destination,      4, 4.6f);
+        add(list, destination + " Café",            "☕ Cafe",        "Food",      "MG Road, " + destination,         4, 4.0f);
+        add(list, destination + " Sports Bar",      "🍺 Bar",         "Nightlife", "City Center, " + destination,    5, 3.9f);
+        add(list, destination + " Grand Hotel",     "🏨 Hotel",       "Stay",      "Station Road, " + destination,   6, 4.4f);
+        add(list, destination + " Beach Resort",    "🏨 Resort",      "Stay",      "Coastal Road, " + destination,   6, 4.7f);
         allFetchedPlaces = list;
-        fetchPhotosForPlaces(allFetchedPlaces);
         applyFilter();
     }
 
-    void add(ArrayList<Place> list, String name, String cat, String subCat, String addr, int prio) {
-        Place p = new Place(); p.name=name; p.category=cat; p.subCategory=subCat; p.address=addr; p.priority=prio; list.add(p);
+    void add(ArrayList<Place> list, String name, String cat, String subCat, String addr, int prio, float rating) {
+        Place p = new Place();
+        p.name = name; p.category = cat; p.subCategory = subCat;
+        p.address = addr; p.priority = prio; p.rating = rating;
+        list.add(p);
     }
 
     void showPlaces(ArrayList<Place> places) {
         tvLoading.setVisibility(View.GONE);
         listAttractions.setVisibility(View.VISIBLE);
-        
-        placeAdapter = new PlaceAdapter(places);
-        listAttractions.setAdapter(placeAdapter);
-    }
 
-    class PlaceAdapter extends BaseAdapter {
-        List<Place> places;
+        ArrayAdapter<Place> adapter = new ArrayAdapter<Place>(requireContext(),
+                R.layout.item_attraction, places) {
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                if (convertView == null) {
+                    convertView = LayoutInflater.from(getContext())
+                            .inflate(R.layout.item_attraction, parent, false);
+                }
+                Place place = getItem(position);
+                ((TextView) convertView.findViewById(R.id.tvAttractionNumber)).setText(String.valueOf(position + 1));
+                ((TextView) convertView.findViewById(R.id.tvAttractionName)).setText(place.name);
+                ((TextView) convertView.findViewById(R.id.tvAttractionCategory)).setText(place.category);
+                ((TextView) convertView.findViewById(R.id.tvAttractionAddress)).setText(place.address);
 
-        PlaceAdapter(List<Place> places) {
-            this.places = places;
-        }
+                TextView ratingView = convertView.findViewById(R.id.tvAttractionRating);
+                if (ratingView != null) {
+                    ratingView.setText(String.format(Locale.getDefault(), "★ %.1f", place.rating));
+                }
 
-        @Override
-        public int getCount() {
-            return places.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return places.get(position);
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return position;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            if (convertView == null) {
-                convertView = LayoutInflater.from(getContext()).inflate(R.layout.item_attraction, parent, false);
+                return convertView;
             }
-
-            Place place = (Place) getItem(position);
-            
-            ImageView ivPhoto = convertView.findViewById(R.id.ivPlacePhoto);
-            TextView tvName = convertView.findViewById(R.id.tvAttractionName);
-            TextView tvCategory = convertView.findViewById(R.id.tvAttractionCategory);
-            TextView tvAddress = convertView.findViewById(R.id.tvAttractionAddress);
-            TextView tvRating = convertView.findViewById(R.id.tvRating);
-            MaterialButton btnSelect = convertView.findViewById(R.id.btnSelect);
-
-            tvName.setText(place.name);
-            tvCategory.setText(place.category);
-            tvAddress.setText(place.address);
-            tvRating.setText(String.format(Locale.getDefault(), "★ %.1f", place.rating));
-
-            // Load Image with Glide
-            Glide.with(getContext())
-                    .load(place.photoUrl)
-                    .placeholder(android.R.color.darker_gray)
-                    .error(android.R.color.black)
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .centerCrop()
-                    .into(ivPhoto);
-
-            // Select button logic
-            if (place.isSelected) {
-                btnSelect.setText("✓ Selected");
-                btnSelect.setTextColor(getResources().getColor(R.color.white, null));
-                btnSelect.setBackgroundColor(getResources().getColor(R.color.accent_teal, null));
-                btnSelect.setStrokeColorResource(android.R.color.transparent);
-            } else {
-                btnSelect.setText("Select");
-                btnSelect.setTextColor(getResources().getColor(R.color.accent_blue, null));
-                btnSelect.setBackgroundColor(android.R.color.transparent);
-                btnSelect.setStrokeColorResource(R.color.accent_blue);
-            }
-
-            btnSelect.setOnClickListener(v -> {
-                place.isSelected = !place.isSelected;
-                notifyDataSetChanged();
-            });
-
-            return convertView;
-        }
+        };
+        listAttractions.setAdapter(adapter);
     }
 }
