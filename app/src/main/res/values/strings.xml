@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">TripPlanner</string>
+    <string name="chip_all">All</string>
+    <string name="chip_sights">Sights</string>
+    <string name="chip_food">Food &amp; Drink</string>
+    <string name="chip_nightlife">Nightlife</string>
+    <string name="chip_stay">Stay</string>
+    <string name="chip_beaches">Beaches</string>
+    <string name="chip_restaurant">🍴 Restaurant</string>
+    <string name="chip_cafe">☕ Cafe</string>
+    <string name="chip_clubs">💃 Clubs</string>
+    <string name="chip_pubs">🍺 Pubs</string>
+    <string name="chip_rooms_stay">🏨 Rooms/Stay</string>
+</resources>
