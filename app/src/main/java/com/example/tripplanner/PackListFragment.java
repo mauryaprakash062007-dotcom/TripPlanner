@@ -434,9 +434,10 @@ public class PackListFragment extends Fragment {
     }
 
     void showPackList(ArrayList<PackItem> items) {
+        if (!isAdded() || getContext() == null) return;
         updateProgress(items);
 
-        ArrayAdapter<PackItem> adapter = new ArrayAdapter<PackItem>(requireContext(),
+        ArrayAdapter<PackItem> adapter = new ArrayAdapter<PackItem>(getContext(),
                 R.layout.item_pack, items) {
             @NonNull
             @Override

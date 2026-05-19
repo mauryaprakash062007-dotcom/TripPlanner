@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/surface_dark"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="0dp"
-    android:layout_marginBottom="12dp"
-    android:layout_marginHorizontal="8dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    android:layout_marginBottom="4dp"
+    android:layout_marginHorizontal="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,7 +17,7 @@
         <!-- Image area: emoji sits behind, real photo fades in on top -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="160dp">
+            android:layout_height="180dp">
 
             <TextView
                 android:id="@+id/tvAttractionImagePlaceholder"
@@ -33,90 +33,149 @@
                 android:layout_height="match_parent"
                 android:scaleType="centerCrop" />
 
+            <!-- Subtle gradient scrim at bottom of image -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_gravity="bottom"
+                android:background="@drawable/image_scrim" />
+
         </FrameLayout>
 
-        <!-- Info row -->
+        <!-- Details -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:padding="16dp"
-            android:gravity="center_vertical">
+            android:orientation="vertical"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="14dp"
+            android:paddingBottom="10dp">
 
             <TextView
-                android:id="@+id/tvAttractionNumber"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
-                android:background="@drawable/rating_bg"
-                android:gravity="center"
-                android:text="1"
-                android:textColor="@color/white"
-                android:textSize="14sp"
+                android:id="@+id/tvAttractionName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Place Name"
+                android:textColor="@color/text_primary"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:layout_marginEnd="16dp"/>
+                android:lineSpacingExtra="2dp" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:orientation="vertical">
-
-                <TextView
-                    android:id="@+id/tvAttractionName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Place Name"
-                    android:textColor="@color/text_primary"
-                    android:textSize="17sp"
-                    android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/tvAttractionCategory"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
                     android:text="Category"
                     android:textColor="@color/accent_teal"
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvAttractionAddress"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="Address"
-                    android:textColor="@color/text_secondary"
-                    android:textSize="13sp" />
-
-                <TextView
                     android:id="@+id/tvAttractionRating"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="12dp"
                     android:text="★ 4.2"
                     android:textColor="@color/accent_blue"
                     android:textSize="13sp"
                     android:textStyle="bold" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/tvAttractionAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Address"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginHorizontal="16dp"
+            android:background="@color/divider" />
+
+        <!-- Action Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp"
+            android:gravity="center_vertical">
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSelect"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Select"
+                android:layout_height="36dp"
+                android:text="Directions"
                 android:textAllCaps="false"
                 android:textColor="@color/accent_blue"
-                app:cornerRadius="20dp"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_directions"
+                app:iconTint="@color/accent_blue"
+                app:iconSize="18dp"
+                app:cornerRadius="18dp"
                 app:strokeColor="@color/accent_blue"
+                app:strokeWidth="1dp"
+                android:paddingHorizontal="12dp"
+                android:minWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnVisit"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="Visited"
+                android:textAllCaps="false"
+                android:textColor="@color/accent_teal"
+                android:textSize="13sp"
+                app:icon="@drawable/ic_check"
+                app:iconTint="@color/accent_teal"
+                app:iconSize="18dp"
+                app:cornerRadius="18dp"
+                app:strokeColor="@color/accent_teal"
+                app:strokeWidth="1dp"
                 android:layout_marginStart="8dp"
                 android:paddingHorizontal="12dp"
                 android:minWidth="0dp"
                 android:insetTop="0dp"
                 android:insetBottom="0dp"/>
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnStar"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                app:icon="@drawable/ic_star_border"
+                app:iconTint="#FFC107"
+                app:iconSize="22dp"
+                app:cornerRadius="18dp"
+                android:minWidth="0dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp"
+                android:padding="0dp"
+                android:layout_marginEnd="4dp" />
 
         </LinearLayout>
     </LinearLayout>

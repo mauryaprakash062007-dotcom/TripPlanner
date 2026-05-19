@@ -10,19 +10,12 @@ android {
         buildConfig true
     }
 
-    Properties properties = new Properties()
-    if (project.rootProject.file('local.properties').exists()) {
-        properties.load(project.rootProject.file('local.properties').newDataInputStream())
-    }
-
     defaultConfig {
         applicationId "com.example.tripplanner"
         minSdk 26
         targetSdk 34
         versionCode 1
         versionName "1.0"
-
-        buildConfigField "String", "GOOGLE_API_KEY", "\"${properties.getProperty('places.api.key')}\""
     }
 
     buildTypes {
@@ -46,5 +39,6 @@ dependencies {
     
     // Glide for image loading
     implementation 'com.github.bumptech.glide:glide:4.16.0'
+    implementation 'com.github.bumptech.glide:okhttp3-integration:4.16.0'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.16.0'
 }

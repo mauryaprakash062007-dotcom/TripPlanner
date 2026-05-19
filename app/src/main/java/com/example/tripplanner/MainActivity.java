@@ -55,6 +55,25 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        SharedPreferences prefs = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+        if (prefs.getBoolean("has_active_plan", false)) {
+            String dest = prefs.getString("last_destination", "");
+            long start = prefs.getLong("last_start_date", 0);
+            long end = prefs.getLong("last_end_date", 0);
+            java.util.Set<String> activitiesSet = prefs.getStringSet("last_activities", new java.util.HashSet<>());
+            ArrayList<String> activities = new ArrayList<>(activitiesSet);
+
+            Intent intent = new Intent(this, TripResultActivity.class);
+            intent.putExtra("destination", dest);
+            intent.putExtra("startDate", start);
+            intent.putExtra("endDate", end);
+            intent.putStringArrayListExtra("activities", activities);
+            startActivity(intent);
+            finish();
+            return;
+        }
+
         setContentView(R.layout.activity_main);
 
         db = new DatabaseHelper(this);
@@ -134,10 +153,26 @@ public class MainActivity extends AppCompatActivity {
 
     void fetchSuggestions(String query) {
         try {
-            String encoded = URLEncoder.encode(query, "UTF-8");
-            String url = "https://geocoding-api.open-meteo.com/v1/search?name=" + encoded + "&count=5&language=en&format=json";
+            SharedPreferences prefs = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+            String apiKey = prefs.getString("google_api_key", "");
+            if (apiKey.isEmpty()) return;
 
-            Request request = new Request.Builder().url(url).build();
+            JSONObject jsonBody = new JSONObject();
+            jsonBody.put("input", query);
+            JSONArray types = new JSONArray();
+            types.put("(cities)");
+            jsonBody.put("includedPrimaryTypes", types);
+
+            okhttp3.RequestBody reqBody = okhttp3.RequestBody.create(
+                    jsonBody.toString(), okhttp3.MediaType.parse("application/json")
+            );
+
+            Request request = new Request.Builder()
+                    .url("https://places.googleapis.com/v1/places:autocomplete")
+                    .post(reqBody)
+                    .addHeader("X-Goog-Api-Key", apiKey)
+                    .build();
+
             httpClient.newCall(request).enqueue(new Callback() {
                 @Override
                 public void onFailure(Call call, IOException e) {}
@@ -148,30 +183,26 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         String body = response.body().string();
                         JSONObject root = new JSONObject(body);
-                        JSONArray results = root.optJSONArray("results");
+                        JSONArray suggestionsJson = root.optJSONArray("suggestions");
                         ArrayList<String> suggestions = new ArrayList<>();
-                        if (results != null) {
-                            for (int i = 0; i < results.length(); i++) {
-                                JSONObject loc = results.getJSONObject(i);
-                                String name = loc.optString("name");
-                                String admin1 = loc.optString("admin1", "");
-                                String country = loc.optString("country", "");
-
-                                StringBuilder sb = new StringBuilder(name);
-                                if (!admin1.isEmpty() && !admin1.equals(name)) {
-                                    sb.append(", ").append(admin1);
+                        if (suggestionsJson != null) {
+                            for (int i = 0; i < suggestionsJson.length(); i++) {
+                                JSONObject sug = suggestionsJson.getJSONObject(i);
+                                JSONObject pred = sug.optJSONObject("placePrediction");
+                                if (pred != null) {
+                                    JSONObject textObj = pred.optJSONObject("text");
+                                    if (textObj != null) {
+                                        String desc = textObj.optString("text");
+                                        suggestions.add(desc);
+                                    }
                                 }
-                                if (!country.isEmpty()) {
-                                    sb.append(", ").append(country);
-                                }
-                                suggestions.add(sb.toString());
                             }
                         }
 
                         mainHandler.post(() -> {
                             if (isFinishing() || isDestroyed()) return;
 
-                            // Swap data in the existing adapter (never replace the adapter itself)
+                            // Swap data in the existing adapter
                             suggestionsList.clear();
                             suggestionsList.addAll(suggestions);
                             suggestionAdapter.notifyDataSetChanged();
@@ -187,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         } catch (Exception e) {
-            // Ignore encoding errors
+            // Ignore json/network errors
         }
     }
 
@@ -247,6 +278,14 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void planTrip() {
+        SharedPreferences prefs = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+        String apiKey = prefs.getString("google_api_key", "");
+        if (apiKey.isEmpty()) {
+            Toast.makeText(this, "Please set Google Places API Key in Profile settings first", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(this, ProfileActivity.class));
+            return;
+        }
+
         String destination = etDestination.getText().toString().trim();
 
         if (destination.isEmpty()) {
@@ -267,10 +306,14 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<String> activities = getSelectedActivities();
 
         // Save to SharedPreferences (last trip)
-        SharedPreferences prefs = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+        java.util.Set<String> activitiesSet = new java.util.HashSet<>(activities);
         prefs.edit()
                 .putString("last_destination", destination)
                 .putString("last_trip_date", displayFormat.format(startCalendar.getTime()) + " → " + displayFormat.format(endCalendar.getTime()))
+                .putBoolean("has_active_plan", true)
+                .putLong("last_start_date", startCalendar.getTimeInMillis())
+                .putLong("last_end_date", endCalendar.getTimeInMillis())
+                .putStringSet("last_activities", activitiesSet)
                 .apply();
 
         // Save to SQLite history

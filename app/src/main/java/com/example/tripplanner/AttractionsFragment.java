@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,16 +51,15 @@ public class AttractionsFragment extends Fragment {
 
     private static final String TAG = "AttractionsFragment";
 
-    // API key is now stored in local.properties and injected via BuildConfig
-    private static final String GOOGLE_API_KEY = BuildConfig.GOOGLE_API_KEY;
-
     String destination;
+    long startDate;
     List<String> selectedActivities = new ArrayList<>();
 
     TextView tvLoading;
     ListView listAttractions;
     ChipGroup chipGroupFilters;
     MaterialButton btnRetry;
+    View btnReload;
 
     OkHttpClient httpClient = new OkHttpClient.Builder()
             .connectTimeout(15, TimeUnit.SECONDS)
@@ -75,19 +75,110 @@ public class AttractionsFragment extends Fragment {
     static class ViewHolder {
         ImageView ivImage;
         TextView tvPlaceholder;
-        TextView tvNumber, tvName, tvCategory, tvAddress, tvRating;
-        MaterialButton btnSelect;
+        TextView tvName, tvCategory, tvAddress, tvRating;
+        MaterialButton btnSelect, btnVisit, btnStar;
     }
 
-    static class Place {
-        String name;
-        String category;
-        String subCategory;
-        String address;
-        int priority;
-        float rating;
-        String emoji;
-        String imageUrl;
+    public static class Place {
+        public String name;
+        public String category;
+        public String subCategory;
+        public String address;
+        public int priority;
+        public float rating;
+        public String emoji;
+        public String imageUrl;
+        public boolean isStarred;
+    }
+
+    public static JSONObject placeToJson(Place p) {
+        try {
+            JSONObject obj = new JSONObject();
+            obj.put("name", p.name);
+            obj.put("category", p.category);
+            obj.put("subCategory", p.subCategory);
+            obj.put("address", p.address);
+            obj.put("priority", p.priority);
+            obj.put("rating", p.rating);
+            obj.put("emoji", p.emoji);
+            obj.put("imageUrl", p.imageUrl);
+            obj.put("isStarred", p.isStarred);
+            return obj;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static Place jsonToPlace(JSONObject obj) {
+        Place p = new Place();
+        p.name = obj.optString("name");
+        p.category = obj.optString("category");
+        p.subCategory = obj.optString("subCategory");
+        p.address = obj.optString("address");
+        p.priority = obj.optInt("priority");
+        p.rating = (float) obj.optDouble("rating", -1);
+        p.emoji = obj.optString("emoji");
+        p.imageUrl = obj.optString("imageUrl");
+        p.isStarred = obj.optBoolean("isStarred", false);
+        return p;
+    }
+
+    public static ArrayList<Place> getVisitedPlaces(android.content.Context context, String destination, long startDate) {
+        ArrayList<Place> list = new ArrayList<>();
+        if (context == null) return list;
+        android.content.SharedPreferences prefs = context.getSharedPreferences(LoginActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        String key = "visited_places_" + destination + "_" + startDate;
+        String jsonStr = prefs.getString(key, "[]");
+        try {
+            JSONArray arr = new JSONArray(jsonStr);
+            for (int i = 0; i < arr.length(); i++) {
+                list.add(jsonToPlace(arr.getJSONObject(i)));
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
+        return list;
+    }
+
+    public static void saveVisitedPlaces(android.content.Context context, String destination, long startDate, ArrayList<Place> list) {
+        if (context == null) return;
+        android.content.SharedPreferences prefs = context.getSharedPreferences(LoginActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        String key = "visited_places_" + destination + "_" + startDate;
+        JSONArray arr = new JSONArray();
+        for (Place p : list) {
+            JSONObject obj = placeToJson(p);
+            if (obj != null) arr.put(obj);
+        }
+        prefs.edit().putString(key, arr.toString()).apply();
+    }
+
+    public static ArrayList<Place> getStarredPlaces(android.content.Context context, String destination, long startDate) {
+        ArrayList<Place> list = new ArrayList<>();
+        if (context == null) return list;
+        android.content.SharedPreferences prefs = context.getSharedPreferences(LoginActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        String key = "starred_places_" + destination + "_" + startDate;
+        String jsonStr = prefs.getString(key, "[]");
+        try {
+            JSONArray arr = new JSONArray(jsonStr);
+            for (int i = 0; i < arr.length(); i++) {
+                list.add(jsonToPlace(arr.getJSONObject(i)));
+            }
+        } catch (Exception e) {
+            // Ignore
+        }
+        return list;
+    }
+
+    public static void saveStarredPlaces(android.content.Context context, String destination, long startDate, ArrayList<Place> list) {
+        if (context == null) return;
+        android.content.SharedPreferences prefs = context.getSharedPreferences(LoginActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        String key = "starred_places_" + destination + "_" + startDate;
+        JSONArray arr = new JSONArray();
+        for (Place p : list) {
+            JSONObject obj = placeToJson(p);
+            if (obj != null) arr.put(obj);
+        }
+        prefs.edit().putString(key, arr.toString()).apply();
     }
 
     // ─── Lifecycle ────────────────────────────────────────────────────────────
@@ -101,9 +192,11 @@ public class AttractionsFragment extends Fragment {
         listAttractions  = view.findViewById(R.id.listAttractions);
         chipGroupFilters = view.findViewById(R.id.chipGroupFilters);
         btnRetry         = view.findViewById(R.id.btnRetryAttractions);
+        btnReload        = view.findViewById(R.id.btnReloadAttractions);
 
         if (getArguments() != null) {
             destination        = getArguments().getString("destination");
+            startDate          = getArguments().getLong("startDate", 0);
             selectedActivities = getArguments().getStringArrayList("activities");
         }
 
@@ -114,9 +207,24 @@ public class AttractionsFragment extends Fragment {
             fetchGooglePlacesData();
         });
 
+        btnReload.setOnClickListener(v -> {
+            tvLoading.setText("Finding top spots...");
+            tvLoading.setVisibility(View.VISIBLE);
+            listAttractions.setVisibility(View.GONE);
+            allFetchedPlaces.clear();
+            seenNames.clear();
+            fetchGooglePlacesData();
+        });
+
         setupFilters();
         fetchGooglePlacesData();
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (tvLoading != null) applyFilter();
     }
 
     // ─── Filters ──────────────────────────────────────────────────────────────
@@ -142,14 +250,20 @@ public class AttractionsFragment extends Fragment {
     }
 
     private void applyFilter() {
+        if (getContext() == null || tvLoading == null) return;
         if (allFetchedPlaces.isEmpty()) return;
         
         List<Place> filtered;
         synchronized (allFetchedPlaces) {
-            filtered = currentFilter.equals("All")
-                    ? new ArrayList<>(allFetchedPlaces)
-                    : allFetchedPlaces.stream()
-                    .filter(p -> p.subCategory != null && p.subCategory.equalsIgnoreCase(currentFilter))
+            ArrayList<Place> visited = getVisitedPlaces(getContext(), destination, startDate);
+            java.util.HashSet<String> visitedNames = new java.util.HashSet<>();
+            for (Place vp : visited) {
+                visitedNames.add(vp.name.toLowerCase());
+            }
+
+            filtered = allFetchedPlaces.stream()
+                    .filter(p -> !visitedNames.contains(p.name.toLowerCase()))
+                    .filter(p -> currentFilter.equals("All") || (p.subCategory != null && p.subCategory.equalsIgnoreCase(currentFilter)))
                     .collect(Collectors.toList());
         }
 
@@ -207,7 +321,8 @@ public class AttractionsFragment extends Fragment {
         String[] queries = {
                 "Top tourist attractions and landmarks in " + destination,
                 "Best restaurants, cafes, and bakeries in " + destination,
-                "Top hotels, resorts, and nightlife in " + destination
+                "Top hotels and resorts in " + destination,
+                "Best bars, pubs, and night clubs in " + destination
         };
 
         AtomicInteger pending = new AtomicInteger(queries.length);
@@ -217,8 +332,20 @@ public class AttractionsFragment extends Fragment {
         }
     }
 
+    private String getApiKey() {
+        if (getContext() == null) return "";
+        android.content.SharedPreferences prefs = getContext().getSharedPreferences(LoginActivity.PREFS_NAME, android.content.Context.MODE_PRIVATE);
+        return prefs.getString("google_api_key", "");
+    }
+
     void performGoogleTextSearch(String query, double lat, double lon, boolean hasBias, AtomicInteger pending) {
         try {
+            String apiKey = getApiKey();
+            if (apiKey.isEmpty()) {
+                checkDone(pending);
+                return;
+            }
+
             JSONObject body = new JSONObject();
             body.put("textQuery", query);
             body.put("languageCode", "en");
@@ -245,7 +372,7 @@ public class AttractionsFragment extends Fragment {
             Request request = new Request.Builder()
                     .url("https://places.googleapis.com/v1/places:searchText")
                     .post(reqBody)
-                    .addHeader("X-Goog-Api-Key", GOOGLE_API_KEY)
+                    .addHeader("X-Goog-Api-Key", apiKey)
                     // Requesting exactly the fields we need (including photos)
                     .addHeader("X-Goog-FieldMask", "places.displayName.text,places.formattedAddress,places.rating,places.primaryType,places.photos")
                     .build();
@@ -288,16 +415,22 @@ public class AttractionsFragment extends Fragment {
                 p.rating = (float) pObj.optDouble("rating", -1.0);
 
                 String type = pObj.optString("primaryType", "tourist_attraction").toLowerCase();
+                String lowerName = name.toLowerCase();
+                String lowerAddr = p.address.toLowerCase();
 
                 // Map Google's robust types to our UI
-                if (type.contains("restaurant") || type.contains("cafe") || type.contains("food") || type.contains("bakery")) {
-                    p.category = "🍴 Food"; p.subCategory = "Food"; p.priority = 4; p.emoji = "🍴";
-                } else if (type.contains("bar") || type.contains("night_club")) {
+                if (type.contains("beach") || lowerName.contains("beach") || lowerAddr.contains("beach")) {
+                    p.category = "🏖️ Beach"; p.subCategory = "Beaches"; p.priority = 1; p.emoji = "🏖️";
+                } else if (type.contains("restaurant") || type.contains("cafe") || type.contains("food") || type.contains("bakery")) {
+                    if (type.contains("bar") || type.contains("night_club") || lowerName.contains(" pub") || lowerName.contains(" bar") || lowerName.contains(" club")) {
+                        p.category = "🍺 Nightlife"; p.subCategory = "Nightlife"; p.priority = 5; p.emoji = "🍺";
+                    } else {
+                        p.category = "🍴 Food"; p.subCategory = "Food"; p.priority = 4; p.emoji = "🍴";
+                    }
+                } else if (type.contains("bar") || type.contains("night_club") || type.contains("tavern") || lowerName.contains(" pub") || lowerName.contains(" bar") || lowerName.contains(" club")) {
                     p.category = "🍺 Nightlife"; p.subCategory = "Nightlife"; p.priority = 5; p.emoji = "🍺";
                 } else if (type.contains("hotel") || type.contains("lodging") || type.contains("resort")) {
                     p.category = "🏨 Stay"; p.subCategory = "Stay"; p.priority = 6; p.emoji = "🏨";
-                } else if (type.contains("beach")) {
-                    p.category = "🏖️ Beach"; p.subCategory = "Beaches"; p.priority = 1; p.emoji = "🏖️";
                 } else {
                     p.category = "🏛️ Sights"; p.subCategory = "Sights"; p.priority = 2; p.emoji = "🏛️";
                 }
@@ -307,9 +440,10 @@ public class AttractionsFragment extends Fragment {
                     JSONArray photos = pObj.getJSONArray("photos");
                     if (photos.length() > 0) {
                         String photoName = photos.getJSONObject(0).getString("name");
-                        // Use max dimensions to get a high-quality but compressed image
+                        // Let Google redirect (302) to actual image — Glide follows redirects natively
                         p.imageUrl = "https://places.googleapis.com/v1/" + photoName 
-                                + "/media?maxHeightPx=600&maxWidthPx=800&key=" + GOOGLE_API_KEY;
+                                + "/media?maxHeightPx=600&maxWidthPx=800&key=" + getApiKey();
+                        Log.d(TAG, "Photo URL for " + p.name + ": " + p.imageUrl);
                     }
                 }
 
@@ -320,16 +454,36 @@ public class AttractionsFragment extends Fragment {
         }
     }
 
+    private void sortAllFetchedPlaces() {
+        if (getContext() == null) return;
+        
+        // Read persisted stars and update the in-memory list before sorting
+        ArrayList<Place> starredList = getStarredPlaces(getContext(), destination, startDate);
+        java.util.HashSet<String> starredNames = new java.util.HashSet<>();
+        for (Place sp : starredList) {
+            starredNames.add(sp.name.toLowerCase());
+        }
+
+        synchronized (allFetchedPlaces) {
+            for (Place p : allFetchedPlaces) {
+                p.isStarred = starredNames.contains(p.name.toLowerCase());
+            }
+
+            allFetchedPlaces.sort((a, b) -> {
+                if (a.isStarred && !b.isStarred) return -1;
+                if (!a.isStarred && b.isStarred) return 1;
+                return Float.compare(b.rating, a.rating);
+            });
+        }
+    }
+
     void checkDone(AtomicInteger pending) {
         if (pending.decrementAndGet() == 0) {
             mainHandler.post(() -> {
                 if (allFetchedPlaces.isEmpty()) {
                     showDemoData(true);
                 } else {
-                    // Sort all collected places by rating (highest first)
-                    synchronized (allFetchedPlaces) {
-                        allFetchedPlaces.sort((a, b) -> Float.compare(b.rating, a.rating));
-                    }
+                    sortAllFetchedPlaces();
                     applyFilter();
                 }
             });
@@ -338,6 +492,7 @@ public class AttractionsFragment extends Fragment {
 
     // ─── Adapter ──────────────────────────────────────────────────────────────
     void showPlaces(final ArrayList<Place> places) {
+        if (getContext() == null) return;
         tvLoading.setVisibility(View.GONE);
         btnRetry.setVisibility(View.GONE);
         listAttractions.setVisibility(View.VISIBLE);
@@ -351,24 +506,24 @@ public class AttractionsFragment extends Fragment {
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
                 ViewHolder h;
                 if (convertView == null) {
-                    convertView = LayoutInflater.from(requireContext())
+                    convertView = LayoutInflater.from(parent.getContext())
                             .inflate(R.layout.item_attraction, parent, false);
                     h = new ViewHolder();
                     h.ivImage       = convertView.findViewById(R.id.ivAttractionImage);
                     h.tvPlaceholder = convertView.findViewById(R.id.tvAttractionImagePlaceholder);
-                    h.tvNumber      = convertView.findViewById(R.id.tvAttractionNumber);
                     h.tvName        = convertView.findViewById(R.id.tvAttractionName);
                     h.tvCategory    = convertView.findViewById(R.id.tvAttractionCategory);
                     h.tvAddress     = convertView.findViewById(R.id.tvAttractionAddress);
                     h.tvRating      = convertView.findViewById(R.id.tvAttractionRating);
                     h.btnSelect     = convertView.findViewById(R.id.btnSelect);
+                    h.btnVisit      = convertView.findViewById(R.id.btnVisit);
+                    h.btnStar       = convertView.findViewById(R.id.btnStar);
                     convertView.setTag(h);
                 } else {
                     h = (ViewHolder) convertView.getTag();
                 }
 
                 Place place = places.get(position);
-                h.tvNumber.setText(String.valueOf(position + 1));
                 h.tvName.setText(place.name);
                 h.tvCategory.setText(place.category);
                 h.tvAddress.setText(place.address);
@@ -384,12 +539,33 @@ public class AttractionsFragment extends Fragment {
                 if (place.imageUrl != null && !place.imageUrl.isEmpty()) {
                     h.ivImage.setVisibility(View.VISIBLE);
                     h.tvPlaceholder.setVisibility(View.GONE);
-                    Glide.with(requireContext())
+                    
+                    // Capture views for use inside listener
+                    final ImageView imgView = h.ivImage;
+                    final TextView phView = h.tvPlaceholder;
+                    
+                    Glide.with(parent.getContext())
                             .load(place.imageUrl)
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .transition(DrawableTransitionOptions.withCrossFade(250))
-                            .placeholder(android.R.color.transparent)
-                            .error(android.R.color.transparent)
+                            .listener(new com.bumptech.glide.request.RequestListener<android.graphics.drawable.Drawable>() {
+                                @Override
+                                public boolean onLoadFailed(@Nullable com.bumptech.glide.load.engine.GlideException e,
+                                        Object model, com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
+                                        boolean isFirstResource) {
+                                    Log.e(TAG, "Image load failed for: " + place.name + " url: " + place.imageUrl, e);
+                                    // Show emoji placeholder on failure
+                                    imgView.setVisibility(View.GONE);
+                                    phView.setVisibility(View.VISIBLE);
+                                    return true; // handled
+                                }
+                                @Override
+                                public boolean onResourceReady(android.graphics.drawable.Drawable resource, Object model,
+                                        com.bumptech.glide.request.target.Target<android.graphics.drawable.Drawable> target,
+                                        com.bumptech.glide.load.DataSource dataSource, boolean isFirstResource) {
+                                    return false; // let Glide handle display
+                                }
+                            })
                             .into(h.ivImage);
                 } else {
                     // Google will occasionally miss an image, fallback to emoji
@@ -398,6 +574,63 @@ public class AttractionsFragment extends Fragment {
                 }
 
                 h.btnSelect.setOnClickListener(v -> openMapsNavigation(place));
+
+                if (place.isStarred) {
+                    h.btnStar.setIconResource(R.drawable.ic_star_filled);
+                } else {
+                    h.btnStar.setIconResource(R.drawable.ic_star_border);
+                }
+                h.btnStar.setOnClickListener(v -> {
+                    place.isStarred = !place.isStarred;
+                    // Toggle icon instantly
+                    if (place.isStarred) {
+                        h.btnStar.setIconResource(R.drawable.ic_star_filled);
+                    } else {
+                        h.btnStar.setIconResource(R.drawable.ic_star_border);
+                    }
+                    
+                    // Persist starred state to SharedPreferences
+                    if (getContext() != null) {
+                        ArrayList<Place> starredList = getStarredPlaces(getContext(), destination, startDate);
+                        if (place.isStarred) {
+                            boolean found = false;
+                            for (Place sp : starredList) {
+                                if (sp.name.equalsIgnoreCase(place.name)) {
+                                    found = true;
+                                    break;
+                                }
+                            }
+                            if (!found) {
+                                starredList.add(place);
+                                saveStarredPlaces(getContext(), destination, startDate, starredList);
+                            }
+                        } else {
+                            starredList.removeIf(sp -> sp.name.equalsIgnoreCase(place.name));
+                            saveStarredPlaces(getContext(), destination, startDate, starredList);
+                        }
+                    }
+                    
+                    Toast.makeText(getContext(), place.isStarred ? "Starred!" : "Unstarred!", Toast.LENGTH_SHORT).show();
+                });
+
+                h.btnVisit.setText("Visited");
+                h.btnVisit.setOnClickListener(v -> {
+                    if (getContext() == null) return;
+                    ArrayList<Place> visited = getVisitedPlaces(getContext(), destination, startDate);
+                    boolean already = false;
+                    for (Place vp : visited) {
+                        if (vp.name.equalsIgnoreCase(place.name)) {
+                            already = true;
+                            break;
+                        }
+                    }
+                    if (!already) {
+                        visited.add(place);
+                        saveVisitedPlaces(getContext(), destination, startDate, visited);
+                    }
+                    applyFilter();
+                    Toast.makeText(getContext(), "Marked as Visited!", Toast.LENGTH_SHORT).show();
+                });
                 return convertView;
             }
         };
@@ -458,6 +691,7 @@ public class AttractionsFragment extends Fragment {
         }
 
         allFetchedPlaces = Collections.synchronizedList(list);
+        sortAllFetchedPlaces();
         applyFilter();
     }
 

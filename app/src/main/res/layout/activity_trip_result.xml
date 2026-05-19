@@ -58,6 +58,16 @@
 
             </LinearLayout>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnNewPlan"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="New Plan"
+                android:textColor="@color/accent_teal"
+                android:textSize="14sp"
+                app:backgroundTint="@android:color/transparent" />
+
         </LinearLayout>
 
     </LinearLayout>
@@ -71,7 +81,7 @@
         app:tabIndicatorColor="@color/accent_blue"
         app:tabTextColor="@color/text_secondary"
         app:tabSelectedTextColor="@color/accent_blue"
-        app:tabMode="fixed" />
+        app:tabMode="scrollable" />
 
     <!-- ViewPager -->
     <androidx.viewpager2.widget.ViewPager2

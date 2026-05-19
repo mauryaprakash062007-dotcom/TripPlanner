@@ -99,7 +99,7 @@ public class TripHistoryActivity extends AppCompatActivity {
                 TextView tvDates = convertView.findViewById(R.id.tvHistoryDates);
                 TextView tvActs = convertView.findViewById(R.id.tvHistoryActivities);
 
-                tvDest.setText("✈️ " + t.destination);
+                tvDest.setText(t.destination);
                 tvDates.setText(fmt.format(new Date(t.startDate)) + " → " + fmt.format(new Date(t.endDate)));
                 tvActs.setText(t.activities != null && !t.activities.isEmpty() ? t.activities : "No activities");
                 return convertView;

@@ -38,6 +38,8 @@ public class TripPagerAdapter extends FragmentStateAdapter {
             fragment = new WeatherFragment();
         } else if (position == 1) {
             fragment = new AttractionsFragment();
+        } else if (position == 2) {
+            fragment = new VisitedFragment();
         } else {
             fragment = new PackListFragment();
         }
@@ -48,6 +50,6 @@ public class TripPagerAdapter extends FragmentStateAdapter {
 
     @Override
     public int getItemCount() {
-        return 3;
+        return 4;
     }
 }

@@ -12,7 +12,7 @@ import com.google.android.material.textfield.TextInputEditText;
 
 public class ProfileActivity extends AppCompatActivity {
 
-    TextInputEditText etName, etEmail, etPhone, etBio;
+    TextInputEditText etName, etEmail, etPhone, etBio, etApiKey;
     MaterialButton btnSave, btnBack;
     SharedPreferences sharedPreferences;
 
@@ -27,6 +27,7 @@ public class ProfileActivity extends AppCompatActivity {
         etEmail = findViewById(R.id.etEmail);
         etPhone = findViewById(R.id.etPhone);
         etBio = findViewById(R.id.etBio);
+        etApiKey = findViewById(R.id.etApiKey);
         btnSave = findViewById(R.id.btnSave);
         btnBack = findViewById(R.id.btnBack);
 
@@ -35,6 +36,7 @@ public class ProfileActivity extends AppCompatActivity {
         etEmail.setText(sharedPreferences.getString(LoginActivity.KEY_EMAIL, ""));
         etPhone.setText(sharedPreferences.getString("profile_phone", ""));
         etBio.setText(sharedPreferences.getString("profile_bio", ""));
+        etApiKey.setText(sharedPreferences.getString("google_api_key", ""));
 
         btnSave.setOnClickListener(v -> saveProfile());
         btnBack.setOnClickListener(v -> finish());
@@ -44,6 +46,7 @@ public class ProfileActivity extends AppCompatActivity {
         String name = etName.getText() != null ? etName.getText().toString().trim() : "";
         String phone = etPhone.getText() != null ? etPhone.getText().toString().trim() : "";
         String bio = etBio.getText() != null ? etBio.getText().toString().trim() : "";
+        String apiKey = etApiKey.getText() != null ? etApiKey.getText().toString().trim() : "";
 
         if (TextUtils.isEmpty(name)) {
             etName.setError("Name cannot be empty");
@@ -54,6 +57,7 @@ public class ProfileActivity extends AppCompatActivity {
         editor.putString(LoginActivity.KEY_USERNAME, name);
         editor.putString("profile_phone", phone);
         editor.putString("profile_bio", bio);
+        editor.putString("google_api_key", apiKey);
         editor.apply();
 
         Toast.makeText(this, "Profile saved successfully!", Toast.LENGTH_SHORT).show();
