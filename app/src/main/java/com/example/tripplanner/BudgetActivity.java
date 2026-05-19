@@ -16,6 +16,7 @@ public class BudgetActivity extends AppCompatActivity {
     TextView tvSpent, tvRemaining;
     MaterialButton btnCalculate, btnSave, btnBack;
     SharedPreferences sharedPreferences;
+    String tripPrefix = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +24,17 @@ public class BudgetActivity extends AppCompatActivity {
         setContentView(R.layout.activity_budget);
 
         sharedPreferences = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+
+        boolean hasActive = sharedPreferences.getBoolean("has_active_plan", false);
+        if (!hasActive) {
+            Toast.makeText(this, "Please plan a trip first to manage budget", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        String lastDest = sharedPreferences.getString("last_destination", "");
+        long lastStart = sharedPreferences.getLong("last_start_date", 0);
+        tripPrefix = lastDest + "_" + lastStart + "_";
 
         etTotalBudget = findViewById(R.id.etTotalBudget);
         etAccommodation = findViewById(R.id.etAccommodation);
@@ -36,11 +48,11 @@ public class BudgetActivity extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
 
         // Load saved budget from SharedPreferences
-        etTotalBudget.setText(sharedPreferences.getString("budget_total", ""));
-        etAccommodation.setText(sharedPreferences.getString("budget_accommodation", ""));
-        etFood.setText(sharedPreferences.getString("budget_food", ""));
-        etTransport.setText(sharedPreferences.getString("budget_transport", ""));
-        etActivities.setText(sharedPreferences.getString("budget_activities", ""));
+        etTotalBudget.setText(sharedPreferences.getString(tripPrefix + "budget_total", ""));
+        etAccommodation.setText(sharedPreferences.getString(tripPrefix + "budget_accommodation", ""));
+        etFood.setText(sharedPreferences.getString(tripPrefix + "budget_food", ""));
+        etTransport.setText(sharedPreferences.getString(tripPrefix + "budget_transport", ""));
+        etActivities.setText(sharedPreferences.getString(tripPrefix + "budget_activities", ""));
 
         calculateBudget(); // Show initial calculation
 
@@ -71,11 +83,11 @@ public class BudgetActivity extends AppCompatActivity {
 
     void saveBudget() {
         SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putString("budget_total", getStr(etTotalBudget));
-        editor.putString("budget_accommodation", getStr(etAccommodation));
-        editor.putString("budget_food", getStr(etFood));
-        editor.putString("budget_transport", getStr(etTransport));
-        editor.putString("budget_activities", getStr(etActivities));
+        editor.putString(tripPrefix + "budget_total", getStr(etTotalBudget));
+        editor.putString(tripPrefix + "budget_accommodation", getStr(etAccommodation));
+        editor.putString(tripPrefix + "budget_food", getStr(etFood));
+        editor.putString(tripPrefix + "budget_transport", getStr(etTransport));
+        editor.putString(tripPrefix + "budget_activities", getStr(etActivities));
         editor.apply();
 
         calculateBudget();

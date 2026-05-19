@@ -43,6 +43,16 @@ public class TripResultActivity extends AppCompatActivity {
         // Set up back button
         btnBack.setOnClickListener(v -> finish());
 
+        MaterialButton btnNewPlan = findViewById(R.id.btnNewPlan);
+        btnNewPlan.setOnClickListener(v -> {
+            android.content.SharedPreferences prefs = getSharedPreferences(LoginActivity.PREFS_NAME, MODE_PRIVATE);
+            prefs.edit().putBoolean("has_active_plan", false).apply();
+            android.content.Intent intent = new android.content.Intent(TripResultActivity.this, MainActivity.class);
+            intent.setFlags(android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP | android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            finish();
+        });
+
         // Build subtitle string with date range and days
         SimpleDateFormat fmt = new SimpleDateFormat("d MMM", Locale.getDefault());
         Calendar start = Calendar.getInstance();
@@ -62,7 +72,7 @@ public class TripResultActivity extends AppCompatActivity {
         TripPagerAdapter adapter = new TripPagerAdapter(this, destination, startDate, endDate, activities);
         viewPager.setAdapter(adapter);
 
-        String[] tabTitles = {"🌤 Weather", "🏛 Attractions", "🧳 Pack List"};
+        String[] tabTitles = {"🌤 Weather", "🏛 Attractions", "🗺 Visited", "🧳 Pack List"};
 
         new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
             tab.setText(tabTitles[position]);

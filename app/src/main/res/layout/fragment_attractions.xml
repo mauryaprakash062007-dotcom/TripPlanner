@@ -78,31 +78,61 @@
         </com.google.android.material.chip.ChipGroup>
     </HorizontalScrollView>
 
-    <TextView
-        android:id="@+id/tvAttractionsLoading"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Finding top spots..."
-        android:textColor="@color/text_secondary"
-        android:textSize="14sp"
-        android:gravity="center"
-        android:layout_marginTop="40dp"
-        android:visibility="visible" />
+        android:layout_height="0dp"
+        android:layout_weight="1">
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnRetryAttractions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Retry"
-        android:layout_gravity="center"
-        android:layout_marginTop="16dp"
-        android:visibility="gone" />
+        <TextView
+            android:id="@+id/tvAttractionsLoading"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Finding top spots..."
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginTop="40dp"
+            android:visibility="visible" />
 
-    <ListView
-        android:id="@+id/listAttractions"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnRetryAttractions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Retry"
+            android:layout_gravity="center"
+            android:layout_marginTop="80dp"
+            android:visibility="gone" />
+
+        <ListView
+            android:id="@+id/listAttractions"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="12dp"
+            android:clipToPadding="false"
+            android:paddingBottom="80dp"
+            android:visibility="gone" />
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/btnReloadAttractions"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_gravity="bottom|end"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="28dp"
+            app:cardBackgroundColor="@color/accent_teal"
+            app:cardElevation="6dp"
+            android:foreground="?android:attr/selectableItemBackgroundBorderless"
+            android:clickable="true"
+            android:focusable="true">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_refresh"
+                app:tint="@color/bg_dark" />
+        </androidx.cardview.widget.CardView>
+    </FrameLayout>
 
 </LinearLayout>

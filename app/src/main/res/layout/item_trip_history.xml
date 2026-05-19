@@ -4,50 +4,77 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/surface_dark"
-    app:cardCornerRadius="14dp"
-    app:cardElevation="0dp"
-    android:layout_marginBottom="10dp">
+    app:cardCornerRadius="16dp"
+    app:cardElevation="2dp"
+    android:foreground="?android:attr/selectableItemBackground"
+    android:layout_marginBottom="4dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
+        <!-- Destination icon pill -->
         <TextView
-            android:id="@+id/tvHistoryDestination"
+            android:id="@+id/tvHistoryEmoji"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:gravity="center"
+            android:text="✈️"
+            android:textSize="22sp"
+            android:background="@drawable/rating_bg" />
+
+        <!-- Trip info -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:layout_marginStart="14dp">
+
+            <TextView
+                android:id="@+id/tvHistoryDestination"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Destination"
+                android:textColor="@color/text_primary"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/tvHistoryDates"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Dates"
+                android:textColor="@color/accent_teal"
+                android:textSize="13sp"
+                android:layout_marginTop="3dp" />
+
+            <TextView
+                android:id="@+id/tvHistoryActivities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Activities"
+                android:textColor="@color/text_secondary"
+                android:textSize="12sp"
+                android:layout_marginTop="2dp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+        <!-- Chevron indicator -->
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Destination"
-            android:textColor="@color/text_primary"
-            android:textSize="16sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvHistoryDates"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Dates"
-            android:textColor="@color/accent_teal"
-            android:textSize="13sp"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:id="@+id/tvHistoryActivities"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Activities"
+            android:text="›"
             android:textColor="@color/text_secondary"
-            android:textSize="12sp"
-            android:layout_marginTop="4dp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Long press to delete • Tap to view again"
-            android:textColor="@color/divider"
-            android:textSize="11sp"
-            android:layout_marginTop="6dp" />
+            android:textSize="24sp"
+            android:layout_marginStart="8dp" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
